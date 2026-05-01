@@ -3,26 +3,26 @@
 import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 
-export default function LoginPage() {
+export default function RegisterPage() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login } = useAuth();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const storedUserJson = localStorage.getItem("user");
-    if (!storedUserJson) {
-      alert("No user registered. Please register first.");
-      return;
-    }
+    const user = {
+      name,
+      email,
+      password,
+    };
 
-    const storedUser = JSON.parse(storedUserJson);
-    if (storedUser.email === email && storedUser.password === password) {
-      login(storedUser);
-    } else {
-      alert("Invalid email or password");
-    }
+    // Save user to localStorage
+    localStorage.setItem("user", JSON.stringify(user));
+    
+    // Auto login
+    login(user);
   };
 
   return (
@@ -30,16 +30,24 @@ export default function LoginPage() {
 
       {/* FORM */}
       <form
-        onSubmit={handleLogin}
+        onSubmit={handleRegister}
         className="flex flex-col gap-4 w-80 bg-white p-6 rounded-2xl shadow-lg border"
       >
         <h2 className="text-3xl font-bold text-center text-black">
-          Login
+          Register
         </h2>
 
         <input
           type="text"
-          placeholder="Enter Email"
+          placeholder="Full Name"
+          className="p-3 border-2 border-gray-400 rounded-lg"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+
+        <input
+          type="email"
+          placeholder="Email"
           className="p-3 border-2 border-gray-400 rounded-lg"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -47,25 +55,23 @@ export default function LoginPage() {
 
         <input
           type="password"
-          placeholder="Enter Password"
+          placeholder="Password"
           className="p-3 border-2 border-gray-400 rounded-lg"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
 
         <button className="bg-black text-white p-3 rounded-lg">
-          Login
+          Register
         </button>
-
-              <button
-        onClick={() => { window.location.href = '/register'; }}
-        className="bg-green-600 text-white px-6 py-3 rounded-lg"
-      >
-        Go to Register
-      </button>
       </form>
 
-
+      <button
+        onClick={() => { window.location.href = '/login'; }}
+        className="bg-green-600 text-white px-6 py-3 rounded-lg"
+      >
+        Have Account? Login
+      </button>
 
     </div>
   );
